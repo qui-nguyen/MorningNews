@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { List, Avatar } from "antd";
 import Nav from "./Nav";
+import {Link} from 'react-router-dom';
+//import {connect} from 'react-redux';
 
 function ScreenSource() {
   /*------------------State--------------------*/
@@ -33,7 +35,7 @@ function ScreenSource() {
                 avatar={
                   <Avatar src={`./images/${item.category}.png`} />
                 }
-                title={<a href={`/sources/${item.id}/articles`}>{item.name}</a>}
+                title={<Link to={`/sources/${item.id}/articles`}>{item.name}</Link>}
                 description={item.description}
               />
             </List.Item>
