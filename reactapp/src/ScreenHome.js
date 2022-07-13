@@ -26,7 +26,10 @@ function ScreenHome() {
     let signUpResponse = await rawSignUpResponse.json();
     console.log(signUpResponse);
     setIsLogin(signUpResponse.notExist);
-    setModalContent(signUpResponse.message);
+    if (signUpResponse.message) {
+      setModalContent(signUpResponse.message);
+      showModal();
+    }
 
   };
 
@@ -40,7 +43,10 @@ function ScreenHome() {
     let response = await rawResponse.json();
     console.log(response);
     setIsLogin(response.isExist);
-    setModalContent(response.message);
+    if (response.message) {
+      setModalContent(response.message);
+      showModal();
+    }
   }
 
   /*--------------------------Modal----------------------------- */
@@ -92,7 +98,7 @@ function ScreenHome() {
               style={{ width: "80px" }}
               type="primary"
               className="btn"
-              onClick={() => (handleClickSignin(), showModal())}
+              onClick={() => handleClickSignin()}
             >
               Sign-in
             </Button>
