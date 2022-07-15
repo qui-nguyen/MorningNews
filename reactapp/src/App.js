@@ -7,14 +7,15 @@ import ScreenSource from "./ScreenSource";
 import ScreenArticlesBySource from "./ScreenArticlesBySource";
 
 import {myArticles} from "./reducers/article";
+import { userToken } from "./reducers/user";
+import { language } from "./reducers/language";
 
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
 
-const store = createStore(combineReducers({ myArticles }));
-
+const store = createStore(combineReducers({ myArticles, userToken, language }));
+console.log(store.getState());
 function App() {
-  //console.log(store.getState());
   return (
       <Provider store={store}>
         <Router>
@@ -31,5 +32,4 @@ function App() {
       </Provider>
   );
 }
-
 export default App;

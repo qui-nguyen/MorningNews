@@ -61,7 +61,9 @@ function ScreenMyArticles(props) {
 
 /*--------------Component container----------------------*/
 function mapStateToProps(state) {
-  return { myArticles: state.myArticles };
+  return { 
+    myArticles: state.myArticles
+   };
 } 
 
 function mapDispatchToProps(dispatch) {

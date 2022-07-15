@@ -3,7 +3,9 @@ import "./App.css";
 import { Input, Button, Modal } from "antd";
 import { Redirect } from "react-router-dom";
 
-function ScreenHome() {
+import { connect } from "react-redux";
+
+function ScreenHome(props) {
   /*--------------------------State---------------------*/
   const [emailSignUp, setEmailSignUp] = useState("");
   const [pwdSignUp, setPwdSignUp] = useState("");
@@ -24,13 +26,15 @@ function ScreenHome() {
       body: `email=${emailSignUp}&pwd=${pwdSignUp}&name=${nameSignUp}`,
     });
     let signUpResponse = await rawSignUpResponse.json();
-    console.log(signUpResponse);
+    //console.log(signUpResponse);
     setIsLogin(signUpResponse.notExist);
+    console.log(signUpResponse);
     if (signUpResponse.message) {
       setModalContent(signUpResponse.message);
       showModal();
+    }else{
+      props.handleGetUserToken(signUpResponse.token);
     }
-
   };
 
   /*--------------------------Sign-in-POST---------------------*/
@@ -41,11 +45,12 @@ function ScreenHome() {
       body: `email=${email}&pwd=${pwd}`,
     });
     let response = await rawResponse.json();
-    console.log(response);
     setIsLogin(response.isExist);
     if (response.message) {
       setModalContent(response.message);
       showModal();
+    } else {
+      props.handleGetUserToken(response.token);
     }
   }
 
@@ -132,7 +137,7 @@ function ScreenHome() {
               style={{ width: "80px" }}
               type="primary"
               className="btn"
-              onClick={() =>(handleSubmitSignUp(), showModal())}
+              onClick={() =>(handleSubmitSignUp())}
             >
               Sign-up
             </Button>
@@ -145,4 +150,15 @@ function ScreenHome() {
   }
 }
 
-export default ScreenHome;
+
+
+function mapDispatchToProps(dispatch) {
+  return {
+    handleGetUserToken: function (token) {
+      dispatch({ type: "getToken", token: token });
+    },
+  };
+}
+
+export default connect(null, mapDispatchToProps)(ScreenHome);
+
