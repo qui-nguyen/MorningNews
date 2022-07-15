@@ -18,7 +18,7 @@ function Nav() {
         </Menu.Item>
 
         <Menu.Item key="app">
-          <Link to="/"><Icon type="logout" />Logout</Link>
+          <a href="/"><Icon type="logout" />Logout</a>
         </Menu.Item>
 
       </Menu>

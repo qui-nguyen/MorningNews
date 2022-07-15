@@ -155,7 +155,7 @@ function ScreenHome(props) {
 function mapDispatchToProps(dispatch) {
   return {
     handleGetUserToken: function (token) {
-      dispatch({ type: "getToken", token: token });
+      dispatch({ type: "saveToken", token: token });
     },
   };
 }

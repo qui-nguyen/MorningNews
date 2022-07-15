@@ -1,25 +1,27 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var request = require('sync-request');
-var userModel = require('../models/users'); // importation model
+var request = require("sync-request");
+var userModel = require("../models/users"); // importation model
 
 // Import libairie bcrypt and module uid2
-var bcrypt = require('bcrypt');
-var uid2 = require('uid2');
+var bcrypt = require("bcrypt");
+var uid2 = require("uid2");
+const UserModel = require("../models/users");
+const { response } = require("express");
 
 // Nb of tours to encrypt password
 const cost = 10;
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get("/", function (req, res, next) {
+  res.render("index", { title: "Express" });
 });
 
 // POST sign-up
-router.post('/sign-up', async function (req, res, next) {
+router.post("/sign-up", async function (req, res, next) {
   let notExist = false;
-  let message = 'Email or password is empty';
-  let token = '';
+  let message = "Email or password is empty";
+  let token = "";
   if (
     req.body.email.length !== 0 &&
     req.body.pwd.length !== 0 &&
@@ -29,7 +31,7 @@ router.post('/sign-up', async function (req, res, next) {
       email: req.body.email,
     });
     if (user) {
-      message = 'Account already exist';
+      message = "Account already exist";
     } else {
       notExist = true;
     }
@@ -44,19 +46,19 @@ router.post('/sign-up', async function (req, res, next) {
       });
 
       let newUserSaved = await newUser.save();
-      
-      message = '';
-      token = newUser.token
+
+      message = "";
+      token = newUser.token;
     }
   }
   res.json({ notExist, message, token });
 });
 
 // POST sign-in
-router.post('/sign-in', async function (req, res, next) {
+router.post("/sign-in", async function (req, res, next) {
   let isExist = false;
-  let message = 'Email or password is empty';
-  let token = '';
+  let message = "Email or password is empty";
+  let token = "";
   if (req.body.email.length !== 0 && req.body.pwd.length !== 0) {
     let user = await userModel.findOne({
       email: req.body.email,
@@ -64,14 +66,67 @@ router.post('/sign-in', async function (req, res, next) {
 
     if (bcrypt.compareSync(req.body.pwd, user.pwd)) {
       isExist = true;
-      message = '';
-      token = user.token
-
+      message = "";
+      token = user.token;
     } else {
-      message = 'Verify your password or your email';
+      message = "Verify your password or your email";
     }
   }
   res.json({ isExist, message, token });
+});
+
+// POST wishlist
+router.post("/wishlist", async function (req, res, next) {
+  let isOk = true;
+
+  let user = await userModel.findOne({ token: req.body.token });
+
+  if(user){
+    let articleExist = user.wishList.filter((article) => article.title === req.body.title).length !== 0 ? true : false;
+    if (articleExist) {
+      isOk = false;
+    }else{
+      user.wishList.push({
+        title: req.body.title,
+        desc: req.body.desc,
+        content: req.body.content,
+        img: req.body.img,
+        url: req.body.url,
+      });
+      let userArticleSaved = await user.save();
+    }
+  }
+  res.json({isOk});
+});
+
+router.post('/getMyWishlist', async (req, res, next) => {
+  
+  let user = await userModel.findOne({ token: req.body.token });
+  
+  let myArticlesDB = [];
+  if(user){
+    myArticlesDB = user.wishList;
+  }
+  res.json(myArticlesDB);
+});
+
+router.delete('/deleteArticleWishlist', async (req, res, next) => {
+  let isDeleteOk = false;
+  let countSubDoc = 0;
+  let user = await userModel.findOne({ token: req.body.token });
+
+  if(user){
+    countSubDoc = user.wishList.length;
+   let articleIdToDelete = user.wishList.find(a => a.title === req.body.title).id;
+
+   user.wishList.id(articleIdToDelete).remove();
+   let newUserState = await user.save();
+    
+   if(newUserState.length !== countSubDoc){
+    isDeleteOk = true;
+   }
+  }
+  res.json({isDeleteOk});
 });
 
 module.exports = router;

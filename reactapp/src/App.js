@@ -14,6 +14,7 @@ import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
 
 const store = createStore(combineReducers({ myArticles, userToken, language }));
+
 console.log(store.getState());
 function App() {
   return (

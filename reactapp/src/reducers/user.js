@@ -1,5 +1,5 @@
 export const userToken = (userToken = '', action) => {
-    if (action.type === "getToken") {
+    if (action.type === "saveToken") {
       return action.token;
     } else {
       return userToken;

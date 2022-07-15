@@ -10,7 +10,6 @@ const { Meta } = Card;
 
 /*----------------------------Component-----------------------*/
 function ScreenArticlesBySource(props) {
-
   let { sourceId } = useParams();
 
   /*--------------------------Articles----------------------------- */
@@ -46,6 +45,19 @@ function ScreenArticlesBySource(props) {
     setIsModalVisible(false);
   };
 
+  /*--------------------------Wislist-POST---------------------*/
+  async function addToWishList(article, token) {
+    let rawResponse = await fetch("/wishlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `token=${token}&title=${article.title}&desc=${article.description}&content=${article.content}&img=${article.img}&url=${article.url}`,
+    });
+    let response = await rawResponse.json();
+    if (response.isOk) {
+      props.addToWishListFront(article);
+    }
+  }
+
   let listArticles = articleList.map((article, index) => {
     return (
       <Card
@@ -68,12 +80,16 @@ function ScreenArticlesBySource(props) {
             type="like"
             key="ellipsis"
             onClick={() =>
-              props.addToWishList({
-                title: article.title,
-                description: article.description,
-                content: article.content,
-                img: article.urlToImage,
-              })
+              addToWishList(
+                {
+                  title: article.title,
+                  description: article.description,
+                  content: article.content,
+                  img: article.urlToImage,
+                  url: article.url,
+                },
+                props.token
+              )
             }
           />,
         ]}
@@ -90,41 +106,62 @@ function ScreenArticlesBySource(props) {
     );
   });
 
-  return (
-    <div>
-      <Nav />
-      <Modal
-        title={modalContent.title}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>{modalContent.content}</p>
-      </Modal>
-      <div className="Banner" />
-
-      <div className="Card">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
+  if (props.token) {
+    return (
+      <div>
+        <Nav />
+        <Modal
+          title={modalContent.title}
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
         >
-          {listArticles}
+          <p>{modalContent.content}</p>
+        </Modal>
+        <div className="Banner" />
+
+        <div className="Card">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            {listArticles}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <Nav></Nav>
+        <div className="Banner"></div>
+        <div className="HomeThemes">
+          <h1>You are not connected</h1>
+        </div>
+      </div>
+    );
+  }
 }
 
 /*------Component container : Redux - Dispatch function - Send infos to Redux-----------*/
+function mapStateToProps(state) {
+  return {
+    token: state.userToken,
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
-    addToWishList: function (article) {
+    addToWishListFront: function (article) {
       dispatch({ type: "addArticle", article: article });
     },
   };
-};
+}
 
-export default connect(null, mapDispatchToProps)(ScreenArticlesBySource);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ScreenArticlesBySource);
