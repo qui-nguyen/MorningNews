@@ -5,6 +5,7 @@ var wishListSchema = mongoose.Schema({
   desc: String,
   content: String,
   img: String,
+  url: String
 });
 
 var userSchema = mongoose.Schema({

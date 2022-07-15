@@ -91,6 +91,7 @@ router.post("/wishlist", async function (req, res, next) {
         desc: req.body.desc,
         content: req.body.content,
         img: req.body.img,
+        url: req.body.url,
       });
       let userArticleSaved = await user.save();
     }

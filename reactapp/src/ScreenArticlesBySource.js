@@ -10,7 +10,6 @@ const { Meta } = Card;
 
 /*----------------------------Component-----------------------*/
 function ScreenArticlesBySource(props) {
-
   let { sourceId } = useParams();
 
   /*--------------------------Articles----------------------------- */
@@ -51,7 +50,7 @@ function ScreenArticlesBySource(props) {
     let rawResponse = await fetch("/wishlist", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `token=${token}&title=${article.title}&desc=${ article.description}&content=${article.content}&img=${article.img}`,
+      body: `token=${token}&title=${article.title}&desc=${article.description}&content=${article.content}&img=${article.img}&url=${article.url}`,
     });
     let response = await rawResponse.json();
     if (response.isOk) {
@@ -81,12 +80,16 @@ function ScreenArticlesBySource(props) {
             type="like"
             key="ellipsis"
             onClick={() =>
-              addToWishList({
-                title: article.title,
-                description: article.description,
-                content: article.content,
-                img: article.urlToImage,
-              }, props.token)
+              addToWishList(
+                {
+                  title: article.title,
+                  description: article.description,
+                  content: article.content,
+                  img: article.urlToImage,
+                  url: article.url,
+                },
+                props.token
+              )
             }
           />,
         ]}
@@ -103,40 +106,52 @@ function ScreenArticlesBySource(props) {
     );
   });
 
-  return (
-    <div>
-      <Nav />
-      <Modal
-        title={modalContent.title}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>{modalContent.content}</p>
-      </Modal>
-      <div className="Banner" />
-
-      <div className="Card">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
+  if (props.token) {
+    return (
+      <div>
+        <Nav />
+        <Modal
+          title={modalContent.title}
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
         >
-          {listArticles}
+          <p>{modalContent.content}</p>
+        </Modal>
+        <div className="Banner" />
+
+        <div className="Card">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            {listArticles}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <Nav></Nav>
+        <div className="Banner"></div>
+        <div className="HomeThemes">
+          <h1>You are not connected</h1>
+        </div>
+      </div>
+    );
+  }
 }
 
 /*------Component container : Redux - Dispatch function - Send infos to Redux-----------*/
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    token: state.userToken
-  }
-} ;
+    token: state.userToken,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -144,6 +159,9 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: "addArticle", article: article });
     },
   };
-};
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScreenArticlesBySource);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ScreenArticlesBySource);

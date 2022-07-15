@@ -17,7 +17,13 @@ export const myArticles = (myArticles = [], action) => {
     action.articles.forEach(article => {
       let foundArticle = copyMyArticles.filter(a => a.title === article.title).length;
       if(foundArticle === 0){
-        copyMyArticles.push(article);
+        copyMyArticles.push({
+          title: article.title,
+          description: article.desc,
+          content: article.content,
+          img: article.img,
+          url: article.url
+        });
       }
     });
 
