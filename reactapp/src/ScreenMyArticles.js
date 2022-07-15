@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Card, Icon } from "antd";
 import Nav from "./Nav";
@@ -7,7 +7,36 @@ import { connect } from "react-redux";
 const { Meta } = Card;
 
 function ScreenMyArticles(props) {
-  //console.log(props.myArticles);
+
+  useEffect(() => {
+    const loadData = async (token) => {
+      let rawResponse = await fetch("/getMyWishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `token=${token}`,
+      });
+      let response = await rawResponse.json();
+      if(response){
+        props.getWishList(response);
+      }
+    };
+    loadData(props.token);
+  }, []);
+
+  const deleteFromWishList = async (title, token) => {
+
+    let rawResponse = await fetch("/deleteArticleWishlist", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `token=${token}&title=${title}`,
+    });
+    let response = await rawResponse.json();
+    console.log(response.isDeleteOk);
+    if (response.isDeleteOk) {
+      props.deleteFromWishListFront(title);
+    }
+
+  }
 
   const articles = props.myArticles.map((article, i) => {
     return (
@@ -29,7 +58,7 @@ function ScreenMyArticles(props) {
             <Icon
               type="delete"
               key="ellipsis"
-              onClick={() => props.deleteFromWishList(article.title)}
+              onClick={() => deleteFromWishList(article.title, props.token)}
             ></Icon>,
           ]}
         >
@@ -62,14 +91,18 @@ function ScreenMyArticles(props) {
 /*--------------Component container----------------------*/
 function mapStateToProps(state) {
   return { 
-    myArticles: state.myArticles
+    myArticles: state.myArticles,
+    token: state.userToken,
    };
 } 
 
 function mapDispatchToProps(dispatch) {
   return {
-    deleteFromWishList: function (title) {
+    deleteFromWishListFront: function (title) {
       dispatch({ type: "deleteArticle", title: title });
+    },
+    getWishList: function (myArticlesDB) {
+      dispatch({ type: "getArticlesDB", articles: myArticlesDB });
     },
   };
 }

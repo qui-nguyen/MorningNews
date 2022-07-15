@@ -26,10 +26,7 @@ function ScreenSource(props) {
       <Nav />
 
       <div className="Banner">
-        <img
-        src="./images/fr.jpg"
-        onClick={() => props.chooseLanguage("fr")}
-      />
+        <img src="./images/fr.jpg" onClick={() => props.chooseLanguage("fr")} />
         <img
           src="./images/usa.jpg"
           onClick={() => props.chooseLanguage("us")}
@@ -59,6 +56,7 @@ function ScreenSource(props) {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
+    token: state.userToken,
   };
 };
 
@@ -69,7 +67,7 @@ const mapDispatchToProps = (dispatch) => {
         type: "getLanguage",
         language: language,
       });
-    },
+    }
   };
 };
 
