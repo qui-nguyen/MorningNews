@@ -64,7 +64,11 @@ router.post("/sign-in", async function (req, res, next) {
       email: req.body.email,
     });
 
-    if (bcrypt.compareSync(req.body.pwd, user.pwd)) {
+    if (!user) {
+      message = "Verify your password or your email";
+      return res.json({ isExist, message, token });
+      
+    } else if (bcrypt.compareSync(req.body.pwd, user.pwd)) {
       isExist = true;
       message = "";
       token = user.token;
