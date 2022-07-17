@@ -10,7 +10,7 @@ function ScreenHome(props) {
   const [emailSignUp, setEmailSignUp] = useState("");
   const [pwdSignUp, setPwdSignUp] = useState("");
   const [nameSignUp, setNameSignUp] = useState("");
-  
+
   const [isLogin, setIsLogin] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -32,8 +32,9 @@ function ScreenHome(props) {
     if (signUpResponse.message) {
       setModalContent(signUpResponse.message);
       showModal();
-    }else{
+    } else {
       props.handleGetUserToken(signUpResponse.token);
+      localStorage.setItem("token", signUpResponse.token);
     }
   };
 
@@ -51,6 +52,7 @@ function ScreenHome(props) {
       showModal();
     } else {
       props.handleGetUserToken(response.token);
+      localStorage.setItem("token", response.token);
     }
   }
 
@@ -70,7 +72,9 @@ function ScreenHome(props) {
     setIsModalVisible(false);
   };
 
-  if (isLogin === false) {
+  if (props.token) {
+    return <Redirect to="/sources" />;
+  } else {
     return (
       <div>
         <Modal
@@ -112,7 +116,7 @@ function ScreenHome(props) {
           {/* SIGN-UP */}
 
           <div className="Sign">
-          <Input
+            <Input
               placeholder="name"
               className="Login-input"
               onChange={(e) => setNameSignUp(e.target.value)}
@@ -130,14 +134,13 @@ function ScreenHome(props) {
               className="Login-input"
               onChange={(e) => setPwdSignUp(e.target.value)}
               value={pwdSignUp}
-          
             />
 
             <Button
               style={{ width: "80px" }}
               type="primary"
               className="btn"
-              onClick={() =>(handleSubmitSignUp())}
+              onClick={() => handleSubmitSignUp()}
             >
               Sign-up
             </Button>
@@ -145,12 +148,14 @@ function ScreenHome(props) {
         </div>
       </div>
     );
-  } else {
-    return <Redirect to="/sources" />;
   }
 }
 
-
+function mapStateToProps(state) {
+  return {
+    token: state.userToken,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -160,5 +165,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(ScreenHome);
-
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenHome);

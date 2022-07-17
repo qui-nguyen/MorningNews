@@ -55,6 +55,7 @@ function ScreenSource(props) {
   }
   else{
     return (
+      /*
       <div>
       <Nav></Nav>
       <div className="Banner">
@@ -68,6 +69,8 @@ function ScreenSource(props) {
           <h1>You are not connected</h1>
         </div>
         </div>
+        */
+       <Redirect to="/" />
     )
   }
  
@@ -76,7 +79,7 @@ function ScreenSource(props) {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
-    token: state.userToken,
+   token: state.userToken,
   };
 };
 

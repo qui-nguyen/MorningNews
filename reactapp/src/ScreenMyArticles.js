@@ -4,6 +4,7 @@ import { Card, Icon, Modal } from "antd";
 import Nav from "./Nav";
 
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 const { Meta } = Card;
 
 function ScreenMyArticles(props) {
@@ -45,20 +46,22 @@ function ScreenMyArticles(props) {
   }, []);
 
   /*--------------------------Delete article from DB wishlist---------------------------- */
-  const deleteFromWishList = async (title, token) => {
+  const deleteFromWishList = async (id, token) => {
     let rawResponse = await fetch("/deleteArticleWishlist", {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `token=${token}&title=${title}`,
+      body: `token=${token}&id=${id}`,
     });
     let response = await rawResponse.json();
-    console.log(response.isDeleteOk);
+    //console.log(response.isDeleteOk);
 
     /*--------------------Delete article from state (redux-store) of Front-------------- */
     if (response.isDeleteOk) {
-      props.deleteFromWishListFront(title);
+      props.deleteFromWishListFront(id);
     }
   };
+
+  console.log(props.myArticles);
 
   const articles = props.myArticles.map((article, i) => {
     return (
@@ -84,11 +87,10 @@ function ScreenMyArticles(props) {
             <Icon
               type="delete"
               key="ellipsis"
-              onClick={() => deleteFromWishList(article.title, props.token)}
+              onClick={() => deleteFromWishList(article._id, props.token)}
             ></Icon>,
           ]}
         >
-          {/*<Meta title={article.title} description={article.description} />*/}
           <Meta
             title={
               <a href={article.url} target="_blank">
@@ -139,6 +141,7 @@ function ScreenMyArticles(props) {
     }
   } else {
     return (
+      /*
       <div>
         <Nav></Nav>
         <div className="Banner"></div>
@@ -146,6 +149,8 @@ function ScreenMyArticles(props) {
           <h1>You are not connected</h1>
         </div>
       </div>
+      */
+     <Redirect to="/" />
     );
   }
 }
@@ -160,8 +165,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    deleteFromWishListFront: function (title) {
-      dispatch({ type: "deleteArticle", title: title });
+    deleteFromWishListFront: function (id) {
+      dispatch({ type: "deleteArticle", id: id });
     },
 
     getWishList: function (myArticlesDB) {

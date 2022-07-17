@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 var wishListSchema = mongoose.Schema({
   title: String,
-  desc: String,
+  description: String,
   content: String,
   img: String,
   url: String
