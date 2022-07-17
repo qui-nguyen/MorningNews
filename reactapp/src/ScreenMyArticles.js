@@ -49,20 +49,22 @@ function ScreenMyArticles(props) {
   }, []);
 
   /*--------------------------Delete article from DB wishlist---------------------------- */
-  const deleteFromWishList = async (title, token) => {
+  const deleteFromWishList = async (id, token) => {
     let rawResponse = await fetch("/deleteArticleWishlist", {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `token=${token}&title=${title}`,
+      body: `token=${token}&id=${id}`,
     });
     let response = await rawResponse.json();
     console.log(response.isDeleteOk);
 
     /*--------------------Delete article from state (redux-store) of Front-------------- */
     if (response.isDeleteOk) {
-      props.deleteFromWishListFront(title);
+      props.deleteFromWishListFront(id);
     }
   };
+
+  console.log(props.myArticles);
 
   const articles = props.myArticles.map((article, i) => {
     return (
@@ -88,7 +90,7 @@ function ScreenMyArticles(props) {
             <Icon
               type="delete"
               key="ellipsis"
-              onClick={() => deleteFromWishList(article.title, localStorageToken)}
+              onClick={() => deleteFromWishList(article.id, localStorageToken)}
             ></Icon>,
           ]}
         >
@@ -167,8 +169,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    deleteFromWishListFront: function (title) {
-      dispatch({ type: "deleteArticle", title: title });
+    deleteFromWishListFront: function (id) {
+      dispatch({ type: "deleteArticle", id: id });
     },
 
     getWishList: function (myArticlesDB) {

@@ -82,7 +82,8 @@ router.post("/sign-in", async function (req, res, next) {
 // POST wishlist
 router.post("/wishlist", async function (req, res, next) {
   let isOk = true;
-
+let userArticleSaved = {};
+let newArticle;
   let user = await userModel.findOne({ token: req.body.token });
 
   if(user){
@@ -92,15 +93,20 @@ router.post("/wishlist", async function (req, res, next) {
     }else{
       user.wishList.push({
         title: req.body.title,
-        desc: req.body.desc,
+        description: req.body.description,
         content: req.body.content,
         img: req.body.img,
         url: req.body.url,
       });
-      let userArticleSaved = await user.save();
+      userArticleSaved = await user.save();
     }
   }
-  res.json({isOk});
+  let pos = userArticleSaved.wishList.length - 1;
+  //console.log(userArticleSaved.wishList[pos]);
+  
+  newArticle = userArticleSaved.wishList[pos];
+
+  res.json({isOk, newArticle});
 });
 
 router.post('/getMyWishlist', async (req, res, next) => {
@@ -117,13 +123,15 @@ router.post('/getMyWishlist', async (req, res, next) => {
 router.delete('/deleteArticleWishlist', async (req, res, next) => {
   let isDeleteOk = false;
   let countSubDoc = 0;
+  console.log(req.body.id);
   let user = await userModel.findOne({ token: req.body.token });
 
   if(user){
     countSubDoc = user.wishList.length;
-   let articleIdToDelete = user.wishList.find(a => a.title === req.body.title).id;
+  // let articleIdToDelete = user.wishList.find(a => a.title === req.body.title).id;
+  
 
-   user.wishList.id(articleIdToDelete).remove();
+   user.wishList.id(req.body.id).remove();
    let newUserState = await user.save();
     
    if(newUserState.length !== countSubDoc){

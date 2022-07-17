@@ -50,11 +50,12 @@ function ScreenArticlesBySource(props) {
     let rawResponse = await fetch("/wishlist", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `token=${token}&title=${article.title}&desc=${article.description}&content=${article.content}&img=${article.img}&url=${article.url}`,
+      body: `token=${token}&title=${article.title}&description=${article.description}&content=${article.content}&img=${article.img}&url=${article.url}`,
     });
     let response = await rawResponse.json();
     if (response.isOk) {
-      props.addToWishListFront(article);
+      props.addToWishListFront(response.newArticle);
+      console.log(response.newArticle);
     }
   }
 
@@ -87,6 +88,7 @@ function ScreenArticlesBySource(props) {
                   content: article.content,
                   img: article.urlToImage,
                   url: article.url,
+                  id:""
                 },
                 localStorage.getItem("token")
               )

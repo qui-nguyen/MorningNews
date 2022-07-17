@@ -8,7 +8,7 @@ export const myArticles = (myArticles = [], action) => {
   
     /*--Action delete a article--*/
   if (action.type === "deleteArticle") {
-    return myArticles.filter((t) => t.title !== action.title);
+    return myArticles.filter((article) => article.id !== action.id);
   }
   
   if (action.type === "getArticlesDB") {
@@ -19,12 +19,13 @@ export const myArticles = (myArticles = [], action) => {
       if(foundArticle === 0){
         copyMyArticles.push({
           title: article.title,
-          description: article.desc,
+          description: article.description,
           content: article.content,
           img: article.img,
-          url: article.url
+          url: article.url,
+          id: article._id
         });
-      }
+      } 
     });
 
     return copyMyArticles;
