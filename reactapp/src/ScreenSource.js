@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 function ScreenSource(props) {
   /*------------------State--------------------*/
   const [sourceList, setSourceList] = useState([]);
-  let localStorageToken = localStorage.getItem("token");
 
   useEffect(() => {
     async function loadData() {
@@ -23,7 +22,7 @@ function ScreenSource(props) {
   
   }, [props.language]);
 
-  if (localStorageToken) {
+  if (props.token) {
     return (
       <div>
         <Nav />
@@ -80,7 +79,7 @@ function ScreenSource(props) {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
-   // token: state.userToken,
+   token: state.userToken,
   };
 };
 

@@ -18,9 +18,6 @@ function ScreenHome(props) {
 
   const [message, setMessage] = useState("");
 
-  let localStorageToken = localStorage.getItem("token");
-  //console.log(localStorageToken);
-
   /*--------------------------Sign-up-POST---------------------*/
   const handleSubmitSignUp = async () => {
     let rawSignUpResponse = await fetch("/sign-up", {
@@ -36,7 +33,7 @@ function ScreenHome(props) {
       setModalContent(signUpResponse.message);
       showModal();
     } else {
-     // props.handleGetUserToken(signUpResponse.token);
+      props.handleGetUserToken(signUpResponse.token);
       localStorage.setItem("token", signUpResponse.token);
     }
   };
@@ -54,7 +51,7 @@ function ScreenHome(props) {
       setModalContent(response.message);
       showModal();
     } else {
-      //props.handleGetUserToken(response.token);
+      props.handleGetUserToken(response.token);
       localStorage.setItem("token", response.token);
     }
   }
@@ -75,87 +72,82 @@ function ScreenHome(props) {
     setIsModalVisible(false);
   };
 
-  if (props.token === null) {
-    if (isLogin === false) {
-      return (
-        <div>
-          <Modal
-            title="Messages"
-            visible={isModalVisible}
-            onOk={handleOk}
-            onCancel={handleCancel}
-          >
-            <p>{modalContent}</p>
-          </Modal>
-          <div className="Login-page">
-            {/* SIGN-IN */}
+  if (props.token) {
+    return <Redirect to="/sources" />;
+  } else {
+    return (
+      <div>
+        <Modal
+          title="Messages"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <p>{modalContent}</p>
+        </Modal>
+        <div className="Login-page">
+          {/* SIGN-IN */}
 
-            <div className="Sign">
-              <Input
-                placeholder="email@gmail.com"
-                className="Login-input"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-              />
+          <div className="Sign">
+            <Input
+              placeholder="email@gmail.com"
+              className="Login-input"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            />
 
-              <Input.Password
-                placeholder="password"
-                className="Login-input"
-                onChange={(e) => setPwd(e.target.value)}
-                value={pwd}
-              />
+            <Input.Password
+              placeholder="password"
+              className="Login-input"
+              onChange={(e) => setPwd(e.target.value)}
+              value={pwd}
+            />
 
-              <Button
-                style={{ width: "80px" }}
-                type="primary"
-                className="btn"
-                onClick={() => handleClickSignin()}
-              >
-                Sign-in
-              </Button>
-            </div>
+            <Button
+              style={{ width: "80px" }}
+              type="primary"
+              className="btn"
+              onClick={() => handleClickSignin()}
+            >
+              Sign-in
+            </Button>
+          </div>
 
-            {/* SIGN-UP */}
+          {/* SIGN-UP */}
 
-            <div className="Sign">
-              <Input
-                placeholder="name"
-                className="Login-input"
-                onChange={(e) => setNameSignUp(e.target.value)}
-                value={nameSignUp}
-              />
-              <Input
-                placeholder="email@gmail.com"
-                className="Login-input"
-                onChange={(e) => setEmailSignUp(e.target.value)}
-                value={emailSignUp}
-              />
+          <div className="Sign">
+            <Input
+              placeholder="name"
+              className="Login-input"
+              onChange={(e) => setNameSignUp(e.target.value)}
+              value={nameSignUp}
+            />
+            <Input
+              placeholder="email@gmail.com"
+              className="Login-input"
+              onChange={(e) => setEmailSignUp(e.target.value)}
+              value={emailSignUp}
+            />
 
-              <Input.Password
-                placeholder="password"
-                className="Login-input"
-                onChange={(e) => setPwdSignUp(e.target.value)}
-                value={pwdSignUp}
-              />
+            <Input.Password
+              placeholder="password"
+              className="Login-input"
+              onChange={(e) => setPwdSignUp(e.target.value)}
+              value={pwdSignUp}
+            />
 
-              <Button
-                style={{ width: "80px" }}
-                type="primary"
-                className="btn"
-                onClick={() => handleSubmitSignUp()}
-              >
-                Sign-up
-              </Button>
-            </div>
+            <Button
+              style={{ width: "80px" }}
+              type="primary"
+              className="btn"
+              onClick={() => handleSubmitSignUp()}
+            >
+              Sign-up
+            </Button>
           </div>
         </div>
-      );
-    } else {
-      return <Redirect to="/sources" />;
-    }
-  } else {
-    props.handleGetUserToken(localStorageToken);
-    return <Redirect to="/sources" />;
+      </div>
+    );
   }
 }
 
@@ -163,7 +155,7 @@ function mapStateToProps(state) {
   return {
     token: state.userToken,
   };
-};
+}
 
 function mapDispatchToProps(dispatch) {
   return {

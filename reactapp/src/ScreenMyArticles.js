@@ -8,9 +8,6 @@ import { Redirect } from "react-router-dom";
 const { Meta } = Card;
 
 function ScreenMyArticles(props) {
-  /*-----------------------localStrorage (Token)------------------------------- */
-  let localStorageToken = localStorage.getItem('token');
-
   /*-----------------------------Modal---------------------------------- */
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState({});
@@ -45,7 +42,7 @@ function ScreenMyArticles(props) {
         props.getWishList(response);
       }
     };
-    loadData(localStorageToken);
+    loadData(props.token);
   }, []);
 
   /*--------------------------Delete article from DB wishlist---------------------------- */
@@ -56,7 +53,7 @@ function ScreenMyArticles(props) {
       body: `token=${token}&id=${id}`,
     });
     let response = await rawResponse.json();
-    console.log(response.isDeleteOk);
+    //console.log(response.isDeleteOk);
 
     /*--------------------Delete article from state (redux-store) of Front-------------- */
     if (response.isDeleteOk) {
@@ -90,11 +87,10 @@ function ScreenMyArticles(props) {
             <Icon
               type="delete"
               key="ellipsis"
-              onClick={() => deleteFromWishList(article.id, localStorageToken)}
+              onClick={() => deleteFromWishList(article._id, props.token)}
             ></Icon>,
           ]}
         >
-          {/*<Meta title={article.title} description={article.description} />*/}
           <Meta
             title={
               <a href={article.url} target="_blank">
@@ -108,7 +104,7 @@ function ScreenMyArticles(props) {
     );
   });
 
-  if (localStorageToken) {
+  if (props.token) {
     if (props.myArticles.length === 0) {
       return (
         <div>
@@ -163,7 +159,7 @@ function ScreenMyArticles(props) {
 function mapStateToProps(state) {
   return {
     myArticles: state.myArticles,
-    //token: state.userToken,
+    token: state.userToken,
   };
 }
 

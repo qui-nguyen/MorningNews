@@ -8,7 +8,7 @@ export const myArticles = (myArticles = [], action) => {
   
     /*--Action delete a article--*/
   if (action.type === "deleteArticle") {
-    return myArticles.filter((article) => article.id !== action.id);
+    return myArticles.filter((article) => article._id !== action.id);
   }
   
   if (action.type === "getArticlesDB") {
@@ -23,7 +23,7 @@ export const myArticles = (myArticles = [], action) => {
           content: article.content,
           img: article.img,
           url: article.url,
-          id: article._id
+          _id: article._id
         });
       } 
     });

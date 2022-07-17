@@ -88,9 +88,9 @@ function ScreenArticlesBySource(props) {
                   content: article.content,
                   img: article.urlToImage,
                   url: article.url,
-                  id:""
+                  _id: "",
                 },
-                localStorage.getItem("token")
+                props.token
               )
             }
           />,
@@ -108,7 +108,7 @@ function ScreenArticlesBySource(props) {
     );
   });
 
-  if (localStorage.getItem("token")) {
+  if (props.token) {
     return (
       <div>
         <Nav />
@@ -136,6 +136,7 @@ function ScreenArticlesBySource(props) {
       </div>
     );
   } else {
+    console.log("Test");
     return (
       /*
       <div>
@@ -146,19 +147,18 @@ function ScreenArticlesBySource(props) {
         </div>
       </div>
       */
-     <Redirect to="/" />
+      <Redirect to="/" />
     );
   }
 }
 
 /*------Component container : Redux - Dispatch function - Send infos to Redux-----------*/
-/*
 function mapStateToProps(state) {
   return {
     token: state.userToken,
   };
 }
-*/
+
 function mapDispatchToProps(dispatch) {
   return {
     addToWishListFront: function (article) {
@@ -168,6 +168,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ScreenArticlesBySource);
