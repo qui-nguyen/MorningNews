@@ -1,9 +1,8 @@
-/*
+
 export const userToken = (userToken = "", action) => {
     if (action.type === "saveToken") {
-      return localStorage.setItem("token", action.token);
+      return action.token;
     } else {
       return userToken;
     }
   };
-  */

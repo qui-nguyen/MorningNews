@@ -19,7 +19,7 @@ function ScreenHome(props) {
   const [message, setMessage] = useState("");
 
   let localStorageToken = localStorage.getItem("token");
-  console.log(localStorageToken);
+  //console.log(localStorageToken);
 
   /*--------------------------Sign-up-POST---------------------*/
   const handleSubmitSignUp = async () => {
@@ -36,7 +36,7 @@ function ScreenHome(props) {
       setModalContent(signUpResponse.message);
       showModal();
     } else {
-      //props.handleGetUserToken(signUpResponse.token);
+     // props.handleGetUserToken(signUpResponse.token);
       localStorage.setItem("token", signUpResponse.token);
     }
   };
@@ -75,7 +75,7 @@ function ScreenHome(props) {
     setIsModalVisible(false);
   };
 
-  if (localStorageToken === null) {
+  if (props.token === null) {
     if (isLogin === false) {
       return (
         <div>
@@ -154,17 +154,16 @@ function ScreenHome(props) {
       return <Redirect to="/sources" />;
     }
   } else {
-    //props.handleGetUserToken(localStorageToken);
+    props.handleGetUserToken(localStorageToken);
     return <Redirect to="/sources" />;
   }
 }
-/*
+
 function mapStateToProps(state) {
   return {
     token: state.userToken,
   };
 };
-
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -174,6 +173,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(ScreenHome);
-*/
-export default ScreenHome;
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenHome);

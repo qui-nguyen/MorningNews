@@ -88,7 +88,7 @@ function ScreenArticlesBySource(props) {
                   img: article.urlToImage,
                   url: article.url,
                 },
-                props.token
+                localStorage.getItem("token")
               )
             }
           />,
