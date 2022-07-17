@@ -4,9 +4,13 @@ import { Card, Icon, Modal } from "antd";
 import Nav from "./Nav";
 
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 const { Meta } = Card;
 
 function ScreenMyArticles(props) {
+  /*-----------------------localStrorage (Token)------------------------------- */
+  let localStorageToken = localStorage.getItem('token');
+
   /*-----------------------------Modal---------------------------------- */
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState({});
@@ -41,7 +45,7 @@ function ScreenMyArticles(props) {
         props.getWishList(response);
       }
     };
-    loadData(props.token);
+    loadData(localStorageToken);
   }, []);
 
   /*--------------------------Delete article from DB wishlist---------------------------- */
@@ -84,7 +88,7 @@ function ScreenMyArticles(props) {
             <Icon
               type="delete"
               key="ellipsis"
-              onClick={() => deleteFromWishList(article.title, props.token)}
+              onClick={() => deleteFromWishList(article.title, localStorageToken)}
             ></Icon>,
           ]}
         >
@@ -102,7 +106,7 @@ function ScreenMyArticles(props) {
     );
   });
 
-  if (props.token) {
+  if (localStorageToken) {
     if (props.myArticles.length === 0) {
       return (
         <div>
@@ -139,6 +143,7 @@ function ScreenMyArticles(props) {
     }
   } else {
     return (
+      /*
       <div>
         <Nav></Nav>
         <div className="Banner"></div>
@@ -146,6 +151,8 @@ function ScreenMyArticles(props) {
           <h1>You are not connected</h1>
         </div>
       </div>
+      */
+     <Redirect to="/" />
     );
   }
 }
@@ -154,7 +161,7 @@ function ScreenMyArticles(props) {
 function mapStateToProps(state) {
   return {
     myArticles: state.myArticles,
-    token: state.userToken,
+    //token: state.userToken,
   };
 }
 

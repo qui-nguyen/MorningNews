@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import "./App.css";
 import { Card, Icon, Modal } from "antd";
 
@@ -106,7 +106,7 @@ function ScreenArticlesBySource(props) {
     );
   });
 
-  if (props.token) {
+  if (localStorage.getItem("token")) {
     return (
       <div>
         <Nav />
@@ -135,6 +135,7 @@ function ScreenArticlesBySource(props) {
     );
   } else {
     return (
+      /*
       <div>
         <Nav></Nav>
         <div className="Banner"></div>
@@ -142,17 +143,20 @@ function ScreenArticlesBySource(props) {
           <h1>You are not connected</h1>
         </div>
       </div>
+      */
+     <Redirect to="/" />
     );
   }
 }
 
 /*------Component container : Redux - Dispatch function - Send infos to Redux-----------*/
+/*
 function mapStateToProps(state) {
   return {
     token: state.userToken,
   };
 }
-
+*/
 function mapDispatchToProps(dispatch) {
   return {
     addToWishListFront: function (article) {
@@ -162,6 +166,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(ScreenArticlesBySource);

@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 function ScreenSource(props) {
   /*------------------State--------------------*/
   const [sourceList, setSourceList] = useState([]);
+  let localStorageToken = localStorage.getItem("token");
 
   useEffect(() => {
     async function loadData() {
@@ -22,7 +23,7 @@ function ScreenSource(props) {
   
   }, [props.language]);
 
-  if (props.token) {
+  if (localStorageToken) {
     return (
       <div>
         <Nav />
@@ -55,6 +56,7 @@ function ScreenSource(props) {
   }
   else{
     return (
+      /*
       <div>
       <Nav></Nav>
       <div className="Banner">
@@ -68,6 +70,8 @@ function ScreenSource(props) {
           <h1>You are not connected</h1>
         </div>
         </div>
+        */
+       <Redirect to="/" />
     )
   }
  
@@ -76,7 +80,7 @@ function ScreenSource(props) {
 const mapStateToProps = (state) => {
   return {
     language: state.language,
-    token: state.userToken,
+   // token: state.userToken,
   };
 };
 

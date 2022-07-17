@@ -2,8 +2,9 @@ import React from 'react';
 import './App.css';
 import {Menu, Icon} from 'antd';
 import {Link} from 'react-router-dom';
+import { connect } from "react-redux";
 
-function Nav() {
+function Nav(props) {
 
   return (
     <nav >
@@ -18,12 +19,14 @@ function Nav() {
         </Menu.Item>
 
         <Menu.Item key="app">
-          <a href="/"><Icon type="logout" />Logout</a>
+          <a href="/" onClick={()=> localStorage.clear()}
+          ><Icon type="logout"/>Logout</a>
         </Menu.Item>
 
       </Menu>
     </nav>
   );
 }
+
 
 export default Nav;
