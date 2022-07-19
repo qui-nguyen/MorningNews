@@ -17,13 +17,15 @@ router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
-router.get("/loadNews", async (req, res, next) => {
+// POST all news data
+router.post("/loadNews", async (req, res, next) => {
   let requete = request(
     "GET",
-    `https://newsapi.org/v2/top-headlines/sources?country=${req.query.language}&apiKey=4b0ae722e5b742f89237f9b79b53467c`
+    `https://newsapi.org/v2/top-headlines/sources?country=${req.body.language}&apiKey=4b0ae722e5b742f89237f9b79b53467c`
   );
   // transformer le résultat en JSON vers object
   let resultWS = JSON.parse(requete.body);
+  console.log(req.body.language);
   res.json(resultWS);
 });
 
