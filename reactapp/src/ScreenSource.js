@@ -10,15 +10,13 @@ function ScreenSource(props) {
   const [sourceList, setSourceList] = useState([]);
 
   useEffect(() => {
-    async function loadData() {
+    async function loadData(language) {
       // All sources
-      let rawResponse = await fetch(
-        `https://newsapi.org/v2/top-headlines/sources?country=${props.language}&apiKey=4b0ae722e5b742f89237f9b79b53467c`
-      );
+      let rawResponse = await fetch(`/loadNews?language=${language}`);
       let response = await rawResponse.json();
       setSourceList(response.sources);
     }
-    loadData();
+    loadData(props.language);
   
   }, [props.language]);
 

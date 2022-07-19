@@ -17,6 +17,22 @@ router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
+// Get all news data
+router.get("/loadNews", async (req, res, next) => {
+  let requete = request(
+    "GET",
+    `https://newsapi.org/v2/top-headlines/sources?country=${req.query.language}&apiKey=4b0ae722e5b742f89237f9b79b53467c`,
+    {
+      headers: {
+        'user-agent': 'MorningNewsApp/1.0'
+      }
+    }
+  );
+  // transformer le résultat en JSON vers object
+  let resultWS = JSON.parse(requete.body);
+  res.json(resultWS);
+});
+
 // POST sign-up
 router.post("/sign-up", async function (req, res, next) {
   let notExist = false;
@@ -67,7 +83,6 @@ router.post("/sign-in", async function (req, res, next) {
     if (!user) {
       message = "Verify your password or your email";
       return res.json({ isExist, message, token });
-      
     } else if (bcrypt.compareSync(req.body.pwd, user.pwd)) {
       isExist = true;
       message = "";
@@ -82,15 +97,19 @@ router.post("/sign-in", async function (req, res, next) {
 // POST wishlist
 router.post("/wishlist", async function (req, res, next) {
   let isOk = true;
-let userArticleSaved = {};
-let newArticle;
+  let userArticleSaved = {};
+  let newArticle;
   let user = await userModel.findOne({ token: req.body.token });
 
-  if(user){
-    let articleExist = user.wishList.filter((article) => article.title === req.body.title).length !== 0 ? true : false;
+  if (user) {
+    let articleExist =
+      user.wishList.filter((article) => article.title === req.body.title)
+        .length !== 0
+        ? true
+        : false;
     if (articleExist) {
       isOk = false;
-    }else{
+    } else {
       user.wishList.push({
         title: req.body.title,
         description: req.body.description,
@@ -103,42 +122,40 @@ let newArticle;
   }
   let pos = userArticleSaved.wishList.length - 1;
   //console.log(userArticleSaved.wishList[pos]);
-  
+
   newArticle = userArticleSaved.wishList[pos];
 
-  res.json({isOk, newArticle});
+  res.json({ isOk, newArticle });
 });
 
-router.post('/getMyWishlist', async (req, res, next) => {
-  
+router.post("/getMyWishlist", async (req, res, next) => {
   let user = await userModel.findOne({ token: req.body.token });
-  
+
   let myArticlesDB = [];
-  if(user){
+  if (user) {
     myArticlesDB = user.wishList;
   }
   res.json(myArticlesDB);
 });
 
-router.delete('/deleteArticleWishlist', async (req, res, next) => {
+router.delete("/deleteArticleWishlist", async (req, res, next) => {
   let isDeleteOk = false;
   let countSubDoc = 0;
   console.log(req.body.id);
   let user = await userModel.findOne({ token: req.body.token });
 
-  if(user){
+  if (user) {
     countSubDoc = user.wishList.length;
-  // let articleIdToDelete = user.wishList.find(a => a.title === req.body.title).id;
-  
+    // let articleIdToDelete = user.wishList.find(a => a.title === req.body.title).id;
 
-   user.wishList.id(req.body.id).remove();
-   let newUserState = await user.save();
-    
-   if(newUserState.length !== countSubDoc){
-    isDeleteOk = true;
-   }
+    user.wishList.id(req.body.id).remove();
+    let newUserState = await user.save();
+
+    if (newUserState.length !== countSubDoc) {
+      isDeleteOk = true;
+    }
   }
-  res.json({isDeleteOk});
+  res.json({ isDeleteOk });
 });
 
 module.exports = router;
