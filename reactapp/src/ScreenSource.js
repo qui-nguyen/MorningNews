@@ -12,13 +12,8 @@ function ScreenSource(props) {
   useEffect(() => {
     async function loadData(language) {
       // All sources
-      let rawResponse = await fetch("/loadNews", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `language=${language}`,
-      });
+      let rawResponse = await fetch(`/loadNews?language=${language}`);
       let response = await rawResponse.json();
-      console.log(response);
       setSourceList(response.sources);
     }
     loadData(props.language);
