@@ -17,15 +17,31 @@ router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
-// Get all news data
+// Get all news data (all sources)
 router.get("/loadNews", async (req, res, next) => {
   let requete = request(
     "GET",
     `https://newsapi.org/v2/top-headlines/sources?country=${req.query.language}&apiKey=4b0ae722e5b742f89237f9b79b53467c`,
     {
       headers: {
-        'user-agent': 'MorningNewsApp/1.0'
-      }
+        "user-agent": "MorningNewsApp/1.0",
+      },
+    }
+  );
+  // transformer le résultat en JSON vers object
+  let resultWS = JSON.parse(requete.body);
+  res.json(resultWS);
+});
+
+// Get articles by source
+router.get("/articles-by-sources", async (req, res, next) => {
+  let requete = request(
+    "GET",
+    `https://newsapi.org/v2/top-headlines?sources=${req.query.sourceId}&apiKey=4b0ae722e5b742f89237f9b79b53467c`,
+    {
+      headers: {
+        "user-agent": "MorningNewsApp/1.0",
+      },
     }
   );
   // transformer le résultat en JSON vers object
