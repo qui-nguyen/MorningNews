@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require("express");
 var router = express.Router();
 var request = require("sync-request");
@@ -21,7 +22,7 @@ router.get("/", function (req, res, next) {
 router.get("/loadNews", async (req, res, next) => {
   let requete = request(
     "GET",
-    `https://newsapi.org/v2/top-headlines/sources?country=${req.query.language}&apiKey=4b0ae722e5b742f89237f9b79b53467c`,
+    `https://newsapi.org/v2/top-headlines/sources?country=${req.query.language}&apiKey=${process.env.API_TOKEN}`,
     {
       headers: {
         "user-agent": "MorningNewsApp/1.0",
@@ -37,7 +38,7 @@ router.get("/loadNews", async (req, res, next) => {
 router.get("/articles-by-sources", async (req, res, next) => {
   let requete = request(
     "GET",
-    `https://newsapi.org/v2/top-headlines?sources=${req.query.sourceId}&apiKey=4b0ae722e5b742f89237f9b79b53467c`,
+    `https://newsapi.org/v2/top-headlines?sources=${req.query.sourceId}&apiKey=${process.env.API_TOKEN}`,
     {
       headers: {
         "user-agent": "MorningNewsApp/1.0",
