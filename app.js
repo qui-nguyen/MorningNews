@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'reactapp/build')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'build', 'reactapp/src/index.js'));
 });
 
 // catch 404 and forward to error handler
